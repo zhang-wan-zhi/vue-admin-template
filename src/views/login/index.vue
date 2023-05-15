@@ -56,12 +56,12 @@
         @click.native.prevent="handleLogin"
         >登录</el-button
       >
-      <el-button
+      <!-- <el-button
         type="primary"
         style="width: 100%; margin-left: 0px"
         @click.native.prevent="handleRegister"
         >去注册</el-button
-      >
+      > -->
 
       <!-- <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
