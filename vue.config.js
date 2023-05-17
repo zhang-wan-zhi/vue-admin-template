@@ -38,7 +38,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: "http://172.16.65.246:80",
+        target: process.env.VUE_APP_BASE_PROXY,
         changeOrigin: true,
       },
     },

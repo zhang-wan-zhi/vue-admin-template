@@ -127,7 +127,7 @@
         </el-descriptions>
         <div v-for="(item, index) in form.guideList" :key="index">
           <el-descriptions :column="3" style="margin-top: 20px" border>
-            <el-descriptions-item label="指导人">{{
+            <el-descriptions-item label="被指导人">{{
               item.userId
             }}</el-descriptions-item>
             <el-descriptions-item label="指导时间">{{
@@ -171,9 +171,13 @@
       :visible.sync="dialogFormVisible2"
       width="60%"
     >
-      <el-form :model="form" :label-width="formLabelWidth" ref="form">
+      <el-form ref="formName" :model="form" :label-width="formLabelWidth">
         <el-form-item label="连接类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择">
+          <el-select
+            @change="changrType"
+            v-model="form.type"
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -192,6 +196,21 @@
             :autosize="{ minRows: 4, maxRows: 7 }"
           ></el-input>
         </el-form-item>
+        <el-form-item label="连接" prop="linkId" v-if="type !== '0'">
+          <el-select
+            v-model="form.linkId"
+            @change="changrLink"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in optionsLink"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -206,6 +225,7 @@
 <script>
 import { listMixin } from "@/utils/listMixin.js";
 import { postApi } from "@/api/list";
+import store from "@/store";
 export default {
   mixins: [listMixin],
 
@@ -215,6 +235,7 @@ export default {
       // dialogFormVisible: false,
       formLabelWidth: "120px",
       dialogFormVisible2: false,
+      type: "0",
       options: [
         {
           value: "0",
@@ -233,6 +254,7 @@ export default {
           label: "游戏",
         },
       ],
+      optionsLink: [],
     };
   },
   methods: {
@@ -247,7 +269,11 @@ export default {
     },
     // 提交指导意见
     submitGuideForm() {
-      postApi("/record/add-guide", this.form).then((res) => {
+      const data = {
+        ...this.form,
+        userId: store.getters.id,
+      };
+      postApi("/record/add-guide", data).then((res) => {
         console.log(res);
         if (res.code === "200") {
           this.$message({
@@ -259,6 +285,37 @@ export default {
           // 刷新页面
           this.initMixin();
         }
+      });
+    },
+    changrType(value) {
+      console.log("vvv", this.$refs["formName"]);
+      this.type = value;
+      if (value !== "0") {
+        this.$set(this.form, "linkId", "");
+        this.getLinkList(value);
+      }
+    },
+    changrLink(value) {
+      console.log("value", value);
+      // this.form.linkId = value;
+    },
+    // 获取链接
+    getLinkList(type) {
+      let url = "";
+      if (type === "1") {
+        url = "/record/article-list";
+      } else if (type === "2") {
+        url = "/record/course-list";
+      } else {
+        url = "/record/game-list";
+      }
+      postApi(url).then((res) => {
+        this.optionsLink = res.data.map((item) => {
+          return {
+            label: item.name || item.title,
+            value: item.id,
+          };
+        });
       });
     },
   },

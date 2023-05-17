@@ -3,6 +3,7 @@ import store from "@/store";
 
 export function postApi(url, data) {
   // data.id = store.getters.id;
+  console.log("store.getters.id", store.getters.id);
   return request({
     url,
     method: "post",

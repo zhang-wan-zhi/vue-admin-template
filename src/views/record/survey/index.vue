@@ -13,7 +13,11 @@
     >
       <el-table-column prop="id" label="id" />
       <el-table-column prop="serial" label="题号" />
-      <el-table-column prop="type" label="题目类型" />
+      <el-table-column prop="type" label="题目类型">
+        <template slot-scope="scope">
+          <p>{{ scope.row.type === "single" ? "单选" : "多选" }}</p>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">

@@ -65,6 +65,26 @@
             style="width: 300px"
           ></el-input>
         </el-form-item>
+        <el-form-item label="游戏连接" prop="url">
+          <el-input
+            v-model="form.url"
+            autocomplete="off"
+            style="width: 300px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="游戏介绍" prop="introduction">
+          <div class="example">
+            <quill-editor
+              class="editor"
+              v-if="!isDetail"
+              v-model="form.introduction"
+              :options="editorOption"
+            />
+            <div class="output ql-snow">
+              <div class="ql-editor" v-html="this.form.introduction"></div>
+            </div>
+          </div>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -86,7 +106,59 @@ export default {
       baseUrl: "/game",
       // dialogFormVisible: false,
       formLabelWidth: "120px",
+      editorOption: {
+        theme: "snow",
+        modules: {
+          toolbar: {
+            container: [["link", "image", "bold", "italic", "strike"]],
+          },
+        },
+        placeholder: "请输入内容",
+      },
     };
   },
 };
 </script>
+<style lang="scss" scoped>
+.example {
+  display: flex;
+  height: 30rem;
+
+  .editor,
+  .output {
+    width: 50%;
+    height: 100%;
+  }
+
+  $toolbar-height: 57px;
+
+  .editor {
+    padding-bottom: $toolbar-height;
+  }
+
+  .output {
+    // border: none;
+
+    border: 1px solid #ccc;
+
+    .title {
+      height: $toolbar-height;
+      line-height: $toolbar-height;
+      padding-left: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    > code {
+      width: 100%;
+      margin: 0;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-left: none;
+      border-radius: 0;
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}
+</style>

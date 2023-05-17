@@ -66,6 +66,40 @@
       :visible.sync="dialogFormVisible"
     >
       <el-form :model="form" :label-width="formLabelWidth" ref="form">
+        <el-form-item label="公司名称" prop="companyId">
+          <el-select
+            v-model="form.companyId"
+            placeholder="请选择"
+            v-if="!isDetail && !isEidt"
+          >
+            <el-option
+              v-for="item in companyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-select
+            v-model="form.companyInfo.id"
+            placeholder="请选择"
+            v-if="isEidt"
+          >
+            <el-option
+              v-for="item in companyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-input
+            v-model="form.companyInfo.name"
+            autocomplete="off"
+            style="width: 300px"
+            v-if="isDetail"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="岗位名称" prop="name">
           <el-input
             v-model="form.name"
@@ -88,11 +122,20 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="推荐专业" prop="major">
-          <el-input
+          <!-- <el-input
             v-model="form.major"
             autocomplete="off"
             style="width: 300px"
-          ></el-input>
+          ></el-input> -->
+          <el-select v-model="form.major" placeholder="请选择">
+            <el-option
+              v-for="item in majorList"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="要求学位" prop="degree">
           <el-input
@@ -110,6 +153,7 @@
         </el-form-item>
         <el-form-item label="薪水" prop="salary">
           <el-input
+            type="number"
             v-model="form.salary"
             autocomplete="off"
             style="width: 300px"
@@ -128,6 +172,7 @@
 
 <script>
 import { listMixin } from "@/utils/listMixin.js";
+import { postApi } from "@/api/list";
 export default {
   mixins: [listMixin],
 
@@ -136,7 +181,37 @@ export default {
       baseUrl: "/job",
       // dialogFormVisible: false,
       formLabelWidth: "120px",
+      companyList: [],
+      majorList: [
+        "计算机科学与技术",
+        "软件工程",
+        "工商管理",
+        "会计学",
+        "英语",
+        "机械设计制造及其自动化",
+        "自动化",
+        "通信工程",
+        "电子信息工程",
+        "财务管理",
+      ],
     };
+  },
+  methods: {
+    // 获取公司列表
+    getCompanyList() {
+      postApi("/company/list").then((res) => {
+        const ls = res.data.records.map((item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          };
+        });
+        this.companyList = ls;
+      });
+    },
+  },
+  mounted() {
+    this.getCompanyList();
   },
 };
 </script>

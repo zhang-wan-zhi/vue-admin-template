@@ -30,7 +30,7 @@ export const listMixin = {
   methods: {
     initMixin() {
       // 获取列表
-      postApi(this.baseUrl + "/list", { id: store.getters.id })
+      postApi(this.baseUrl + "/list", {})
         .then((res) => {
           console.log(res);
           this.list = res.data.records;
@@ -132,7 +132,6 @@ export const listMixin = {
       this.listLoading = true;
       postApi(this.baseUrl + "/list", {
         ...this.seachValues,
-        id: store.getters.id,
       })
         .then((res) => {
           console.log(res);
